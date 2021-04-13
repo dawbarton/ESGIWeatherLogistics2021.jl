@@ -34,7 +34,7 @@ function convert_obs_dir(dir)
     countries = String[]
     areas = String[]
     dates = DateTime[]
-    values = Union{Missing, Float64}[]
+    values = Union{Missing,Float64}[]
     for country in readdir(dir)
         countrypath = joinpath(dir, country)
         if !isdir(countrypath)
@@ -48,10 +48,10 @@ function convert_obs_dir(dir)
             else
                 (area, month) = res.captures
             end
-            data = replace(NP.load(filename), NaN=>missing)'  # NaNs represent missing values
+            data = replace(NP.load(filename), NaN => missing)'  # NaNs represent missing values
             basedate = DateTime(month, df)
             @assert size(data, 1) == 24  # 24 hours in a day
-            interval = range(basedate; step=Hour(1), stop=basedate+Month(1)-Hour(1))
+            interval = range(basedate; step=Hour(1), stop=basedate + Month(1) - Hour(1))
             n = length(interval)
             # Append
             append!(countries, fill(country, n))
