@@ -1,10 +1,11 @@
 module Data
 
-using PyCall
-using Dates
-using DataFrames
-using Serialization
-using Scratch
+using PyCall: pyimport
+using Dates: DateTime, DateFormat
+using DataFrames: DataFrame, outerjoin
+using Serialization: Serialization
+using Scratch: @get_scratch!
+using CSV: CSV
 
 # Raw data is expected to be in the rawdata folder with the structure
 
@@ -83,7 +84,7 @@ Return temperature and precipitation data as a `DataFrame`. Data is cached in a 
 space for speed.
 """
 function get_obs()
-    path = @get_scratch!("observations")
+    path = @get_scratch!("data")
     obsfile = joinpath(path, "observations.jls")
     if isfile(obsfile)
         return Serialization.deserialize(obsfile)
@@ -91,6 +92,23 @@ function get_obs()
         obs = convert_obs()
         Serialization.serialize(obsfile, obs)
         return obs
+    end
+end
+
+function convert_prices()
+    spinach = CSV.File("rawdata/spinach-uk.csv"; dateformat="dd/mm/yyyy")
+    return DataFrame((crop="spinach", date=c.date, price=c.price) for c in spinach)
+end
+
+function get_prices()
+    path = @get_scratch!("data")
+    pricefile = joinpath(path, "prices.jls")
+    if isfile(pricefile)
+        return Serialization.deserialize(pricefile)
+    else
+        prices = convert_prices()
+        Serialization.serialize(pricefile, prices)
+        return prices
     end
 end
 
