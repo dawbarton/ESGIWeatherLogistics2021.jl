@@ -12,6 +12,7 @@ Scratch = "6c6a2e73-6563-6170-7368-637461726353"
 Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
 [compat]
+PyCall = "1.92"
 julia = "1.5"
 
 [extras]
